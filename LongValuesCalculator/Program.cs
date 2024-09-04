@@ -102,13 +102,28 @@ namespace LongValuesCalculator
         {
             StringBuilder sb = new StringBuilder();
             int r1, r2, r, carry = 0;
-
+            char sign = new char();
+            char[] tmp;
+            if (value1.Length < value2.Length)
+            {
+                sign = '-';
+                tmp = value1;
+                value1 = value2;
+                value2 = tmp;
+            }
+            else if (value1.Length == value2.Length && value1[0] < value2[0])
+            {
+                sign = '-';
+                tmp = value1;
+                value1 = value2;
+                value2 = tmp;
+            }
             for (int i = value1.Length - 1, j = value2.Length - 1; i >= 0 || j >= 0; i--, j--)
             {
                 r1 = i >= 0 ? (int)char.GetNumericValue(value1[i]) : 0;
                 r2 = j >= 0 ? (int)char.GetNumericValue(value2[j]) : 0;
 
-                if (r1 >= r2)
+                if (r1 >= (r2+carry))
                 {
                     r = r1 - (r2 + carry);
                     carry = 0;
@@ -120,8 +135,9 @@ namespace LongValuesCalculator
                 
                 sb.Insert(0, r);
             }
+            if (carry > 0) sb.Insert(0, carry);
             string result = sb.ToString();
-            return result;
+            return sign + result;
         }
         
         private static string multiply(char[] value1, char[] value2)
