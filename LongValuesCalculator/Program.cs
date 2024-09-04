@@ -10,10 +10,10 @@ namespace LongValuesCalculator
             string? inputText;
             string numbers = "0123456789";
             
-            Console.WriteLine("Type and operation with large numbers. Ex: 1574 + 5");
             while (true)
             {
-
+                op = null;
+                Console.WriteLine("Type and operation with large numbers. Ex: 1574 + 5");
                 do
                 {
                     inputText = Console.ReadLine();
@@ -93,6 +93,7 @@ namespace LongValuesCalculator
                 }
                 sb.Insert(0, r);
             }
+            if (carry > 0) sb.Insert(0, carry);
             string result = sb.ToString();
             return result;
         }
@@ -125,7 +126,42 @@ namespace LongValuesCalculator
         
         private static string multiply(char[] value1, char[] value2)
         {
-            return "not implemented";
+            char[][] jaggedArray = new char[value2.Length][];
+            int k = 0;
+            string suff = "";
+            for (int j = (value2.Length - 1); j >= 0; j--)
+            {
+                StringBuilder sb = new StringBuilder();
+                int r1, r2, r, carry = 0;
+
+                for (int i = value1.Length - 1; i >= 0; i--)
+                {
+                    r1 = (int)char.GetNumericValue(value1[i]);
+                    r2 = (int)char.GetNumericValue(value2[j]);
+
+                    r = (r1 * r2) + carry;
+                    if (r > 9)
+                    {
+                        carry = r / 10;
+                        r = r % 10;
+                    }
+                    else
+                    {
+                        carry = 0;
+                    }
+                    sb.Insert(0, r);
+                }
+                sb.Append(suff);
+                if (carry > 0) sb.Insert(0, carry);
+                suff += "0";
+                jaggedArray[k++] = sb.ToString().ToCharArray();
+            }
+            string result = "0";
+            foreach (char[] a in jaggedArray)
+            {
+                result = add(result.ToCharArray(), a);
+            }
+            return result;
         }
 
         private static string divide(long value, long divisor)
