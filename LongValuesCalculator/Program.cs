@@ -13,7 +13,7 @@ namespace LongValuesCalculator
             while (true)
             {
                 op = null;
-                Console.WriteLine("Type and operation with large numbers. Ex: 1574 + 5");
+                Console.WriteLine("Type and operation with large numbers on the same line and hit enter to validate");
                 do
                 {
                     inputText = Console.ReadLine();
