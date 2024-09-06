@@ -31,25 +31,6 @@ namespace Cryptography2
             SaveKeyToFile("key.txt");
         }
 
-        public void LoadKeyFromFile(string filePath)
-        {
-            encryptKey.Clear();
-            decryptKey.Clear();
-            var lines = File.ReadAllLines(filePath);
-            foreach (var line in lines)
-            {
-                var parts = line.Split(':');
-                if (parts.Length == 2)
-                {
-                    char original = parts[0][0];
-                    char substitute = parts[1][0];
-                    encryptKey[original] = substitute;
-                    decryptKey[substitute] = original;
-                }
-            }
-            ValidateKey();
-        }
-
         private void SaveKeyToFile(string filePath)
         {
             using (var writer = new StreamWriter(filePath))
@@ -61,12 +42,13 @@ namespace Cryptography2
             }
         }
 
-        private void ValidateKey()
+        private bool ValidateKey()
         {
             if (encryptKey.Count != alphabet.Length || decryptKey.Count != alphabet.Length)
             {
-                throw new InvalidOperationException("Invalid key: not all letters have replacements or some letters are used more than once.");
+                return false;
             }
+            return true;
         }
 
         public string Encrypt(string plaintext)
