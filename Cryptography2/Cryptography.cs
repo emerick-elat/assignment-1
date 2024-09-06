@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace Cryptography2
 {
-
-
     internal class Cryptography
     {
         private readonly string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -23,6 +22,11 @@ namespace Cryptography2
         {
             var random = new Random();
             var shuffledAlphabet = alphabet.OrderBy(c => random.Next()).ToArray();
+            /*for (var c = 'a'; c <= 'z'; ++c) { 
+                char.ToU
+            }
+
+            for (var c = 'A'; c <= 'Z'; ++c) { }*/
             for (int i = 0; i < alphabet.Length; i++)
             {
                 encryptKey[alphabet[i]] = shuffledAlphabet[i];
@@ -35,10 +39,23 @@ namespace Cryptography2
         {
             using (var writer = new StreamWriter(filePath))
             {
-                foreach (var kvp in encryptKey)
+                writer.WriteLine(JsonSerializer.Serialize(encryptKey));
+            }
+        }
+
+        private void LoadKeyFromFile(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                using (var reader = new StreamReader(filePath))
                 {
-                    writer.WriteLine($"{kvp.Key}:{kvp.Value}");
+                    string key = reader.ReadLine();
+                    encryptKey = JsonSerializer.Deserialize<Dictionary<char, char>>(key);
                 }
+            }
+            else
+            {
+                throw new FileNotFoundException(nameof(filePath));
             }
         }
 

@@ -1,4 +1,6 @@
-﻿namespace ReadText
+﻿using System.Text;
+
+namespace ReadText
 {
     internal class Program
     {
@@ -39,7 +41,7 @@
             Console.WriteLine("Here is the content of the file in reverse order");
             while (texts?.Count > 0)
             {
-                Console.WriteLine(texts.Pop());
+                Console.WriteLine(ReverseString(texts.Pop()));
             }
         }
 
@@ -59,6 +61,16 @@
             }
 
             Console.WriteLine("File generated successfully.");
+        }
+
+        public static string ReverseString(string str)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = str.Length - 1; i >= 0; i--)
+            {
+                sb.Append(str[i]);
+            }
+            return sb.ToString();
         }
 
     }

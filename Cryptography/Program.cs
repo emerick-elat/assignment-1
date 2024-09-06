@@ -117,9 +117,9 @@ namespace Cryptography
 
         public static string loadKey()
         {
-            try
+            string? key = string.Empty, line, path = "key.txt";
+            if (File.Exists(path))
             {
-                string? key = string.Empty, line, path = "key.txt";
                 using (StreamReader reader = new StreamReader(path))
                 {
                     while ((line = reader.ReadLine()) != null)
@@ -130,9 +130,9 @@ namespace Cryptography
 
                 return key;
             }
-            catch (Exception e)
+            else
             {
-                return null;
+                return string.Empty;
             }
         }
 
