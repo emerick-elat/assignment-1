@@ -13,7 +13,7 @@ namespace LongValuesCalculator
             while (true)
             {
                 op = null;
-                Console.WriteLine("Type and operation with large numbers on the same line and hit enter to validate");
+                Console.WriteLine("Type and operation (+, -, *, /) with large numbers on the same line and press enter to run");
                 do
                 {
                     inputText = Console.ReadLine();
@@ -54,14 +54,9 @@ namespace LongValuesCalculator
                             Console.WriteLine("{0} x {1} = {2}", n1, n2, multiply(x, y));
                             break;
                         case '/':
-                            try
-                            {
-                                Console.WriteLine("{0} / {1} = {2}", n1, n2, multiply(x, y));
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                            }
+                            (string q, string r) = divide(x, y);
+                            Console.WriteLine("q = {0}", q);
+                            if(!string.IsNullOrEmpty(r)) Console.WriteLine("r = {0}", r);
                             break;
                         default:
                             Console.WriteLine("Invalid operation");
@@ -104,25 +99,19 @@ namespace LongValuesCalculator
             int r1, r2, r, carry = 0;
             char sign = new char();
             char[] tmp;
-            if (value1.Length < value2.Length)
+            if (IsGreaterOrEqual(value2, value1))
             {
                 sign = '-';
                 tmp = value1;
                 value1 = value2;
                 value2 = tmp;
             }
-            else if (value1.Length == value2.Length && value1[0] < value2[0])
-            {
-                sign = '-';
-                tmp = value1;
-                value1 = value2;
-                value2 = tmp;
-            }
+
             for (int i = value1.Length - 1, j = value2.Length - 1; i >= 0 || j >= 0; i--, j--)
             {
                 r1 = i >= 0 ? (int)char.GetNumericValue(value1[i]) : 0;
                 r2 = j >= 0 ? (int)char.GetNumericValue(value2[j]) : 0;
-
+                if (r1 < 0 || r2 < 0) break;
                 if (r1 >= (r2+carry))
                 {
                     r = r1 - (r2 + carry);
@@ -133,11 +122,12 @@ namespace LongValuesCalculator
                     carry = 1;
                 }
                 
+                if (r == 0 && i == 0) break;
                 sb.Insert(0, r);
             }
             if (carry > 0) sb.Insert(0, carry);
-            string result = sb.ToString();
-            return sign + result;
+            string result = sign == '-' ? $"{sign}{sb.ToString()}" : sb.ToString();
+            return result;
         }
         
         private static string multiply(char[] value1, char[] value2)
@@ -180,10 +170,62 @@ namespace LongValuesCalculator
             return result;
         }
 
-        private static string divide(long value, long divisor)
+        public static (string, string) divide(char[] value1, char[] value2)
         {
-            return "not implemented";
+            StringBuilder sb = new StringBuilder();
+            (string q, string r) = divideBase(value1[0..value2.Length], value2);
+            
+            if (q[0] != '0') sb.Append(q);
+            for (int i = value2.Length; i < value1.Length; i++)
+            {   
+                (q, r) = divideBase($"{r}{value1[i]}".ToCharArray(), value2);
+                sb.Append(q);
+            }
+            return (sb.ToString(), r);
+        }
 
+        private static (string, string) divideBase(char[] value, char[] divisor)
+        {
+            char[] r = value[..];
+            ulong q = 0;
+            while (IsGreaterOrEqual(r, divisor))
+            {
+                r = substract(r, divisor).ToCharArray();
+                q++;
+            }
+
+            return (q.ToString(), new string(r));
+        }
+
+        private static bool IsGreaterOrEqual(char[] x, char[] y)
+        {
+            if (y == null)
+            {
+                return true;
+            }
+            else if (x == null)
+            {
+                return false;
+            }
+            else if (x.Length > y.Length)
+            {
+                return true;
+            }
+            else if (y.Length > x.Length)
+            {
+                return false;
+            }
+            else
+            {
+                for (int i = 0; i < x.Length; i++)
+                {
+                    if (x[i] < y[i])
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }

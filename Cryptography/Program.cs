@@ -90,15 +90,15 @@ namespace Cryptography
         private static string generateKey()
         {
             Console.WriteLine("Generating the key...");
-            char[] letters = alphabet.ToCharArray();
-            char[] key = new char[letters.Length];
-            Random r = new Random();
-            int step = 5;
+            
+            char[] key = new char[alphabet.Length];
+            Random rand = new Random();
+            int step = rand.Next(alphabet.Length);
             for (int i = 0; i < key.Length; i++)
             {
-                key[(i + step) % 26] = letters[i];
+                key[(i + step) % 26] = alphabet[i];
             }
-            Console.WriteLine(key);
+            
             return new string(key);
             
         }
