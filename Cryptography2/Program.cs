@@ -4,10 +4,10 @@
     {
         static void Main(string[] args)
         {
+            string? text = string.Empty;
             var cipher = new Cryptography();
             cipher.GenerateKey();
-
-            string text = "HELLO WORLD";
+            
 
             while (true)
             {

@@ -7,7 +7,6 @@ namespace LongValuesCalculator
         static void Main(string[] args)
         {
             string? inputText;
-            char? op;
             LongCalculator calculator = new LongCalculator();
             while (true)
             {
@@ -18,7 +17,7 @@ namespace LongValuesCalculator
                 } 
                 while (inputText is null);
 
-                (string x, op, string y) = calculator.ParseInput(inputText);
+                (string x, char? op, string y) = calculator.ParseInput(inputText);
                    
                 if (x.Length > 0 && y.Length > 0 && op is not null)
                 {

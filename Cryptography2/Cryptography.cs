@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 
 namespace Cryptography2
@@ -70,37 +71,36 @@ namespace Cryptography2
 
         public string Encrypt(string plaintext)
         {
-            plaintext = plaintext.ToUpper();
-            var ciphertext = string.Empty;
+            StringBuilder ciphertext = new StringBuilder();
             foreach (var ch in plaintext)
             {
                 if (encryptKey.ContainsKey(ch))
                 {
-                    ciphertext += encryptKey[ch];
+                    ciphertext.Append(encryptKey[ch]);
                 }
                 else
                 {
-                    ciphertext += ch;
+                    ciphertext.Append(ch);
                 }
             }
-            return ciphertext;
+            return ciphertext.ToString();
         }
 
         public string Decrypt(string ciphertext)
         {
-            var plaintext = string.Empty;
+            StringBuilder plaintext = new StringBuilder();
             foreach (var ch in ciphertext)
             {
                 if (decryptKey.ContainsKey(ch))
                 {
-                    plaintext += decryptKey[ch];
+                    plaintext.Append(decryptKey[ch]);
                 }
                 else
                 {
-                    plaintext += ch;
+                    plaintext.Append(ch);
                 }
             }
-            return plaintext;
+            return plaintext.ToString();
         }
     }
 }
