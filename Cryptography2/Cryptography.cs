@@ -7,9 +7,10 @@ using System.Text.Json;
 
 namespace Cryptography2
 {
-    internal class Cryptography
+    internal class Cryptography : ICryptography
     {
-        private readonly string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        //private readonly string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        private string alphabet { get; set; }
         private Dictionary<char, char> encryptKey;
         private Dictionary<char, char> decryptKey;
 
@@ -17,17 +18,18 @@ namespace Cryptography2
         {
             encryptKey = new Dictionary<char, char>();
             decryptKey = new Dictionary<char, char>();
+            StringBuilder sb = new StringBuilder();
+            for (var c = 'a'; c <= 'z'; ++c) { 
+                sb.Append(c);
+                sb.Append(char.ToUpper(c));
+            }
+            alphabet = sb.ToString();
         }
 
         public void GenerateKey()
         {
             var random = new Random();
             var shuffledAlphabet = alphabet.OrderBy(c => random.Next()).ToArray();
-            /*for (var c = 'a'; c <= 'z'; ++c) { 
-                char.ToU
-            }
-
-            for (var c = 'A'; c <= 'Z'; ++c) { }*/
             for (int i = 0; i < alphabet.Length; i++)
             {
                 encryptKey[alphabet[i]] = shuffledAlphabet[i];

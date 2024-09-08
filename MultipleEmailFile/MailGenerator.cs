@@ -11,20 +11,34 @@ namespace MultipleEmailFile
     internal class MailGenerator
     {
         private readonly string alphabet = "abcdefghi1234567890";
+        public int MailPerFile { get; set; }
+        public int NumberOfFiles { get; set; }
+
+        public MailGenerator()
+        {
+            MailPerFile = 10;
+            NumberOfFiles = 5;
+        }
+
+        public MailGenerator(int numberOfMailPerFile, int numberOfFiles)
+        {
+            MailPerFile = numberOfMailPerFile;
+            NumberOfFiles = numberOfFiles;
+        }
 
         public string[] GenerateEmail()
         {
             string username, email = string.Empty;
             string[] domains = { "google.com", "yahoo.com", "yandex.ru", "outlook.com", "hotmail.com", "ventionteams.com" };
             
-            string[] emails = new string[1000];
+            string[] emails = new string[MailPerFile];
             Random rand = new Random();
             for (int i = 0; i < emails.Length - 1; i++)
             {
                 username = alphabet.Substring(0, rand.Next(alphabet.Length));
                 rand.Shuffle(username.ToCharArray());
                 email = $"{username}@{domains[rand.Next(domains.Length - 1)]}";
-                emails[0] = email;
+                emails[i] = email;
                 Console.WriteLine("m");
             }
             return emails;
@@ -38,7 +52,9 @@ namespace MultipleEmailFile
             {
                 s.WriteLine(content);
             }
+            
         }
+
         public void LoadMailFromFile(string filePath)
         {
             if (File.Exists(filePath))

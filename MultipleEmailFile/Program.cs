@@ -8,14 +8,40 @@ namespace MultipleEmailFile
 {
     internal class Program
     {
-        private const int MAX = 5;
+        
         static void Main(string[] args)
-        {   
+        {
+
             MailGenerator gen = new MailGenerator();
-            string basepath = "emails";
-            for (int i = 1; i < MAX; i++) {
-                gen.SaveToFile(gen.GenerateEmail(), $"{basepath}/email-{i}");
+            
+            while (true)
+            {
+                int choice = 0;
+                Console.WriteLine("WELCOME! What do you want to do ?");
+                Console.WriteLine("1- Generate Email and Save in files");
+                Console.WriteLine("2- Check for duplicates");
+                if (int.TryParse(Console.ReadLine(), out choice))
+                {
+                    switch (choice)
+                    {
+                        case 1:
+                            Console.WriteLine($"Generating Emails...please wait");
+                            for (int i = 1; i <= gen.NumberOfFiles; i++)
+                            {
+                                gen.SaveToFile(gen.GenerateEmail(), $"email-{i}");
+                            }
+                            Console.WriteLine("Emails succesfully Generated");
+                            break;
+                        case 2:
+                            Console.WriteLine($"Checking duplicate Emails...please wait");
+                            break;
+                        default:
+                            Console.WriteLine("Wrong choice");
+                            break;
+                    }
+                }
             }
+
         }
     }
 }
