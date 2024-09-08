@@ -9,9 +9,9 @@ namespace LongValuesCalculator
     internal interface ILongCalculator
     {
         (string, char?, string) ParseInput(string input);
-        string Add(char[] value1, char[] value2);
-        string Substract(char[] value1, char[] value2);
-        string Multiply(char[] value1, char[] value2);
-        (string, string) Divide(char[] value1, char[] value2);
+        string Add(string value1, string value2);
+        string Substract(string value1, string value2);
+        string Multiply(string value1, string value2);
+        (string, string) Divide(string value1, string value2);
     }
 }

@@ -15,7 +15,7 @@ namespace LongValuesCalculator
             Operations = "+-*/";
         }
 
-        public string Add(char[] value1, char[] value2)
+        public string Add(string value1, string value2)
         {
             StringBuilder sb = new StringBuilder();
             int r1, r2, r, carry = 0;
@@ -42,13 +42,13 @@ namespace LongValuesCalculator
             return result;
         }
 
-        public string Substract(char[] value1, char[] value2)
+        public string Substract(string value1, string value2)
         {
             StringBuilder sb = new StringBuilder();
             int r1, r2, r, carry = 0;
             char sign = new char();
-            char[] tmp;
-            if (IsGreaterOrEqual(value2, value1))
+            string tmp;
+            if (Compare(value2, value1) == CompareStatus.Greater)
             {
                 sign = '-';
                 tmp = value1;
@@ -91,10 +91,10 @@ namespace LongValuesCalculator
             }
         }
 
-        public string Multiply(char[] value1, char[] value2)
+        public string Multiply(string value1, string value2)
         {
             LongCalculator calculator = new LongCalculator();
-            char[][] jaggedArray = new char[value2.Length][];
+            string[] jaggedArray = new string[value2.Length];
             int k = 0;
             string suff = "";
             for (int j = (value2.Length - 1); j >= 0; j--)
@@ -122,17 +122,17 @@ namespace LongValuesCalculator
                 sb.Append(suff);
                 if (carry > 0) sb.Insert(0, carry);
                 suff += "0";
-                jaggedArray[k++] = sb.ToString().ToCharArray();
+                jaggedArray[k++] = sb.ToString();
             }
             string result = "0";
-            foreach (char[] a in jaggedArray)
+            foreach (string a in jaggedArray)
             {
-                result = calculator.Add(result.ToCharArray(), a);
+                result = calculator.Add(result, a);
             }
             return result;
         }
 
-        public (string, string) Divide(char[] value1, char[] value2)
+        public (string, string) Divide(string value1, string value2)
         {
             StringBuilder sb = new StringBuilder();
             (string q, string r) = divideBase(value1[0..value2.Length], value2);
@@ -140,55 +140,59 @@ namespace LongValuesCalculator
             if (q[0] != '0') sb.Append(q);
             for (int i = value2.Length; i < value1.Length; i++)
             {
-                (q, r) = divideBase($"{r}{value1[i]}".ToCharArray(), value2);
+                (q, r) = divideBase($"{r}{value1[i]}", value2);
                 sb.Append(q);
             }
             return (sb.ToString(), r);
         }
 
-        private static (string, string) divideBase(char[] value, char[] divisor)
+        private static (string, string) divideBase(string value, string divisor)
         {
-            char[] r = value[..];
+            string r = value[..];
             ulong q = 0;
             LongCalculator calculator = new LongCalculator();
-            while (IsGreaterOrEqual(r, divisor))
+            while (Compare(r, divisor) != CompareStatus.Less)
             {
-                r = calculator.Substract(r, divisor).ToCharArray();
+                r = calculator.Substract(r, divisor);
                 q++;
             }
 
             return (q.ToString(), new string(r));
         }
 
-        private static bool IsGreaterOrEqual(char[] x, char[] y)
+        private static CompareStatus Compare(string x, string y)
         {
             if (y == null)
             {
-                return true;
+                return CompareStatus.Greater;
             }
             else if (x == null)
             {
-                return false;
+                return CompareStatus.Less;
             }
             else if (x.Length > y.Length)
             {
-                return true;
+                return CompareStatus.Greater;
             }
             else if (y.Length > x.Length)
             {
-                return false;
+                return CompareStatus.Less;
             }
             else
             {
-                for (int i = 0; i < x.Length; i++)
+                for (int i = 0; i < x.Length - 1; i++)
                 {
-                    if (x[i] < y[i])
+                    if (x[i] > y[i])
                     {
-                        return false;
+                        return CompareStatus.Greater;
+                    }
+                    else if (x[i] < y[i])
+                    {
+                        return CompareStatus.Less;
                     }
                 }
             }
-            return true;
+            return CompareStatus.Equal;
         }
 
         public (string, char?, string) ParseInput(string input)
@@ -215,5 +219,7 @@ namespace LongValuesCalculator
             }
             return (n1.ToString(), op, n2.ToString());
         }
+
+        public enum CompareStatus { Greater, Equal, Less }
     }
 }
