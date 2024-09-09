@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
@@ -23,7 +24,7 @@ namespace MultipleEmailFile
             MailPerFile = 10;
             NumberOfFiles = 5;
             DuplicateEmails = string.Empty;
-            Occurences = new Dictionary<string, int>();
+            Occurences = new Dictionary<string, int>(new IgnoreCaseComparer());
         }
 
         public MailGenerator(int numberOfMailPerFile, int numberOfFiles)
@@ -31,7 +32,7 @@ namespace MultipleEmailFile
             MailPerFile = numberOfMailPerFile;
             NumberOfFiles = numberOfFiles;
             DuplicateEmails = string.Empty;
-            Occurences = new Dictionary<string, int>();
+            Occurences = new Dictionary<string, int>(new IgnoreCaseComparer());
         }
 
         public string[] GenerateEmail()
@@ -46,14 +47,16 @@ namespace MultipleEmailFile
                 username = alphabet.Substring(0, rand.Next(alphabet.Length));
                 rand.Shuffle(username.ToCharArray());
                 email = $"{username}@{domains[rand.Next(domains.Length - 1)]}";
-                emails[i] = email;
+                if(isValidEmail(email))
+                {
+                    emails[i] = email;
+                }
             }
             return emails;
         }
 
         public void SaveToFile(string[] emails, string fileName)
         {
-            //string content = JsonSerializer.Serialize<string[]>(emails);
             using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
             using (StreamWriter s = new StreamWriter(fs))
             {
@@ -67,7 +70,7 @@ namespace MultipleEmailFile
 
         public void LoadMailFromFile()
         {
-            Dictionary<string, int> occurences = new Dictionary<string, int>();
+            Dictionary<string, int> occurences = new Dictionary<string, int>(new IgnoreCaseComparer());
             string filePath;
             StringBuilder sb = new StringBuilder();
             for (int i = 1; i <= NumberOfFiles; i++)
@@ -84,12 +87,12 @@ namespace MultipleEmailFile
                         }
                         else
                         {
-                            occurences.Add(email, 1);
+                            occurences[email] = 1;
                         }
 
                         if (occurences[email] == NumberOfFiles)
                         {
-                            sb.Append($"{email},");
+                            sb.Append($"{email} ");
                         }
                     }
                 }
@@ -106,5 +109,35 @@ namespace MultipleEmailFile
         }
 
         
+    }
+
+    public class IgnoreCaseComparer : IEqualityComparer<string>
+    {
+        public bool Equals(string? x, string? y)
+        {
+            if (x is null && y is null)
+            {
+                return true;
+            }
+
+            if (x is null || y is null)
+            {
+                return false;
+            }
+
+            return string.Equals(x, y, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public int GetHashCode([DisallowNull] string obj)
+        {
+            if (obj is null)
+            {
+                return 0;
+            }
+            else
+            {
+                return obj.ToLowerInvariant().GetHashCode();
+            }
+        }
     }
 }
