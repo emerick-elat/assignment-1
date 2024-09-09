@@ -34,6 +34,8 @@ namespace MultipleEmailFile
                             break;
                         case 2:
                             Console.WriteLine($"Checking duplicate Emails...please wait");
+                            gen.LoadMailFromFile();
+                            Console.WriteLine($"Duplicates: {gen.DuplicateEmails}");
                             break;
                         default:
                             Console.WriteLine("Wrong choice");
