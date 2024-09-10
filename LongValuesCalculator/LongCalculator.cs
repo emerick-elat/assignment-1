@@ -180,7 +180,7 @@ namespace LongValuesCalculator
             }
             else
             {
-                for (int i = 0; i < x.Length - 1; i++)
+                for (int i = 0; i < x.Length; i++)
                 {
                     if (x[i] > y[i])
                     {
