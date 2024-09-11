@@ -12,7 +12,17 @@ namespace LongValuesCalculator
 
     internal class CStack : Stack<char>
     {
-        public override string ToString() => this.Count == 0 
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            while (this.Count > 0)
+            {
+                sb.Append(this.Pop());
+            }
+            return sb.ToString();
+        }
+
+        public string Write() => this.Count == 0 
             ? string.Empty 
             : this.Pop() + ToString();
     }

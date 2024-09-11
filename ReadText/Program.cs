@@ -54,6 +54,7 @@ namespace ReadText
             using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
             using (StreamWriter writer = new StreamWriter(fs))
             {
+ 
                 for (int i = 1; i <= 10; i++)
                 {
                     writer.WriteLine($"This is the mail No {i}");

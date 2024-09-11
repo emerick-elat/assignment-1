@@ -77,7 +77,7 @@ namespace LongValuesCalculator
             }
             if (carry > 0) sb.Insert(0, carry);
             string result = sb.ToString();
-            if (string.IsNullOrEmpty(result) || result == "0")
+            if (string.IsNullOrEmpty(result) || result == "0" || result == "00" || result == "000")
             {
                 return "0";
             }
@@ -140,15 +140,24 @@ namespace LongValuesCalculator
             if (q[0] != '0') sb.Append(q);
             for (int i = value2.Length; i < value1.Length; i++)
             {
+                if (r == "0" && value1[i] == '0')
+                {
+                    sb.Append("0");
+                    continue;
+                }
+                /*if (r == "0" && value1[i] != '0')
+                {
+
+                }*/
                 (q, r) = divideBase($"{r}{value1[i]}", value2);
                 sb.Append(q);
             }
             return (sb.ToString(), r);
         }
 
-        private static (string, string) divideBase(string value, string divisor)
+        public static (string, string) divideBase(string value, string divisor)
         {
-            string r = value[..];
+            string r = value;
             ulong q = 0;
             LongCalculator calculator = new LongCalculator();
             while (Compare(r, divisor) != CompareStatus.Less)
